@@ -6,9 +6,9 @@ export default class Trip extends Component {
 
         this.state =
             {
-                start: 'oren',
-                end: 'akb',
-                date: '2013-03-03'
+                start: 'Оренбург',
+                end: '',
+                date: ''
             }
     };
 

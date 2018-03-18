@@ -14,7 +14,10 @@ export default class TripBlock extends Component {
     render() {
         console.log(this.props.data)
         return (
-            <div className="trip" role="alert" onClick={this.onClick}
+            <div 
+            className={this.props.data.seats == 0 ? "tripalert" : "trip"} 
+            role="alert" 
+            onClick={this.onClick}
             >
 
                 <div className="row">
@@ -27,7 +30,7 @@ export default class TripBlock extends Component {
                     </div>
 
                     <div className="col-md-4">
-                        {this.props.data.seats}
+                        {this.props.data.seats == 0 ? "Мест нет" : this.props.data.seats}
                     </div>
 
                 </div>

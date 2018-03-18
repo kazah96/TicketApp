@@ -27,15 +27,31 @@ export default class RandomTrips extends Component {
             return;
         }
         q.json().then(w => this.onJson(w))
+        
     }
 
     onJson = (j) => {
         this.setState({ currentState: 'active' });
-        this.setState({ data: j });
+        
+        this.setState({data:this.shuffle(j)})
     }
 
     onClickCallback = (f) => {
         this.props.onClickCallback(f);
+    }
+
+    shuffle = (array) => {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        while (0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
     }
 
     render() {
@@ -46,11 +62,11 @@ export default class RandomTrips extends Component {
             <div className="population">
                 <h2>Популярные направления</h2>
                 <div class="row">
-                    <div className="card-deck">
-                        {this.state.data.map((o, a) => 
- 
+
+                    {this.state.data.slice(0,6).map((o, a) =>
+
                         <RandomTripBlock data={o} onClickCallback={this.onClickCallback} />)}
-                    </div>
+
 
                 </div>
             </div>
@@ -75,9 +91,9 @@ class RandomTripBlock extends Component {
     render() {
         return (
 
-            <div 
-            class="col-md-4 p_b " 
-            onClick={o=> this.clicked({start:this.props.data.startPoint, end:this.props.data.endPoint})}
+            <div
+                class="col-md-4 p_b "
+                onClick={o => this.clicked({ start: this.props.data.startPoint, end: this.props.data.endPoint })}
             >
                 <img src={bus} alt="" />
                 <div class="text_city">

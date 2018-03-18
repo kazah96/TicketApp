@@ -48,7 +48,7 @@ export default class Editor extends Component {
                     <thead>
                         {
 
-                            <tr>
+                            <tr className="gl_t">
                                 {
                                     Object.keys(this.state.data[0]).map(o => <td>{o}</td>)
                                 }
@@ -56,7 +56,7 @@ export default class Editor extends Component {
                         }
                     </thead>
 
-                    <div className="form-row">
+                   
                         {this.state.data.map(
                             (a, id) => <tr id={id}>{Object.keys(a).map((o) =>
 
@@ -71,9 +71,9 @@ export default class Editor extends Component {
 
                             )}</tr>)
                         }
-                    </div>
+                   
                 </table>
-                <button className="btn" onClick={this.onSaved}>Save</button>
+                <button className="btn btn_s" onClick={this.onSaved}>Сохранить</button>
             </div>
         )
 
@@ -82,7 +82,7 @@ export default class Editor extends Component {
     render() {
         return (
             <div>
-                <h1>{this.props.header}</h1>
+                <h1 className="text_z">{this.props.header}</h1>
                 {this.makeTable()}
             </div>
         )

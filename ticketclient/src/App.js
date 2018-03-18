@@ -57,6 +57,17 @@ class TicketBuyForm extends Component {
 
 }
 
+class Error extends Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return <div className="alert"><h1>{this.props.data}</h1></div>
+	}
+
+}
+
 
 
 class Booking extends Component {
@@ -106,7 +117,7 @@ class Schedule extends Component {
 	render() {
 		return (
 			<div>
-				<h4 className="text_city">{this.props.user.name} Расписание </h4>
+				<h4 className="text_city"> Расписание <span className="username">{this.props.user.name}</span></h4>
 				<hr/>
 				{this.props.data.map((o,id) => <TripBlock onClick={c=>{}} data={o} />)}
 		</div>
@@ -187,11 +198,17 @@ class App extends Component {
 	}
 
 	onFoundTripsClick = (data) => {
-		console.log(data)
+		
 		if (this.state.logStatus == 1) {
 			NetworkManager.sendInfo("booking",
 				{ tripid: data.id, userid: this.state.user.id }, o => this.onBookingRequestFinished(o))
 		}
+		else if(this.state.logStatus == 'notlogged')
+		{
+			this.setState({error:"Войдите чтобы забронировать"})
+			this.setState({selectedItem:"error"})
+		}
+		
 	}
 
 	onBookingRequestFinished = (r) => {
@@ -312,7 +329,10 @@ class App extends Component {
 			data={this.state.scheduleData} 
 			user={this.state.user}
 			/>;
-
+		if(component == "error")
+		{
+			return <Error data={this.state.error}/>
+		}
 		if (component == "bus")
 			return <Bus />;
 		if (component == "login")
@@ -320,7 +340,7 @@ class App extends Component {
 		if (component == "foundTrips")
 			return <FoundTrips data={this.state.tripData} onClick={this.onFoundTripsClick} />;
 		if (component == "notFound")
-			return <h1>not found</h1>;
+			return <h1 className="alert">Отправления не найдены</h1>;
 		if (component == "loading")
 			return <Loading />
 		if (component == "editor")

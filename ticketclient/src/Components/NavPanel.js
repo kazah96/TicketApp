@@ -26,27 +26,30 @@ export default class NavPanel extends Component {
 
     adminPanel = () => {
         return (
-            <ul class="nav">
-                <li class="nav-item">
-                    <h5 class="nav-link active">
+            <div className="col-md-6">
+                <ul class="nav">
+                    <li class="nav-item">
+
                         <a href="#" onClick={this.props.routeEdit}>
                             Маршруты
                         </a>
-                    </h5>
-                </li>
-                <li class="nav-item">
-                    <h5 class="nav-link active">
+
+                    </li>
+                    <li class="nav-item">
+
                         <a href="#" onClick={this.props.busEdit}>
                             Автобусы
                         </a>
-                    </h5>
-                </li>
-                <li class="nav-item">
-                    <h5 class="nav-link active">Админ {this.props.user.name}</h5>
-                </li>
+
+                    </li>
+                    <li class="nav-item">
+                        Админ <span className="username">{this.props.user.name}</span>
+                    </li>
 
 
-            </ul>
+                </ul>
+            </div>
+
         )
     }
 
@@ -54,20 +57,17 @@ export default class NavPanel extends Component {
         return (
             <ul class="nav">
                 <li class="nav-item">
-                    <h5 class="nav-link active"
 
 
-                    >
-                        <a href="#" onClick={this.props.myTickets}>
-                            Мои билеты
+
+                    <a href="#" onClick={this.props.myTickets}>
+                        Мои билеты
                     </a>
-                    </h5>
+
                 </li>
+
                 <li class="nav-item">
-                    <h5 class="nav-link active">Пункт меню 2</h5>
-                </li>
-                <li class="nav-item">
-                    <h5 class="nav-link active">{this.props.user.name}</h5>
+                    <span className="username">{this.props.user.name}</span>
                 </li>
 
 
@@ -80,14 +80,15 @@ export default class NavPanel extends Component {
         return (
             <ul class="nav">
                 <li class="nav-item">
-                    <h5 class="nav-link active">
-                        <a href="#" onClick={this.props.schedule}>
-                            Расписание
+
+                    <a href="#" onClick={this.props.schedule}>
+                        Расписание
                     </a>
-                    </h5>
+
                 </li>
                 <li class="nav-item">
-                    <h5 class="nav-link active">Водила {this.props.user.name}</h5>
+                    Водила <span className="username">{this.props.user.name}</span>
+
                 </li>
             </ul>
         )

@@ -22,7 +22,7 @@ export default class MyTickets extends Component {
         console.log(o);
         return (
 
-            <div className="booking-success">
+            <div className="trip">
                 <div className="row">
                     <div className="col-md-4">
                         {o.startPoint} - {o.endPoint}
@@ -34,7 +34,7 @@ export default class MyTickets extends Component {
 
                     <div className="col-md-4">
                         <button
-                            className="btn"
+                            className="btn btn_s"
                             onClick={w => this.cancelBooking(o.id)}
                         >Отменить</button>
                     </div>

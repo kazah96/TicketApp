@@ -154,25 +154,26 @@ namespace Server.Controllers
 
 
         [HttpGet]
-        public IActionResult Get(FindTripQuery query)
+        public IActionResult Get(FindTripQuery query)   
         {
-            if (!ModelState.IsValid) return StatusCode(123);
+            if(query.Start == null && query.Date == default && query.End == default) return BadRequest();
 
             var list = repo.Trips.Join(repo.Routes, e => e.RouteId, w => w.Id, (d, s) =>
-                   new TripQuery
-                   {
-                       Id = d.Id,
-                       Date = d.Date,
-                       EndPoint = s.EndPoint,
-                       StartPoint = s.StartPoint,
-                       Seats = d.Bus.BusType.Seats - repo.Tickets.Count(w => w.TripId == d.Id)
-                   }).Where(w => w.StartPoint.ToLower() == query.Start.ToLower()
-                   &&
-                   w.EndPoint.ToLower() == query.End.ToLower()
-                   && (query.Date == default ? true :
-                    w.Date.CompareTo(query.Date) == 0));
+                new TripQuery
+                {
+                    Id = d.Id,
+                    Date = d.Date,
+                    EndPoint = s.EndPoint,
+                    StartPoint = s.StartPoint,
+                    Seats = d.Bus.BusType.Seats - repo.Tickets.Count(w => w.TripId == d.Id)
+                }).Where(w =>
+                (query.Start == null ||
+                String.Equals(query.Start, w.StartPoint, StringComparison.CurrentCultureIgnoreCase))
+                && (query.End == null || String.Equals(query.End, w.EndPoint, StringComparison.CurrentCultureIgnoreCase))
+                    && (query.Date == default || w.Date.CompareTo(query.Date) == 0));
 
-            if (list.Count() == 0) return BadRequest();
+
+            if (!list.Any()) return BadRequest();
             return Ok(list);
         }
 
@@ -279,7 +280,7 @@ namespace Server.Controllers
                      EndPoint = e.Route.EndPoint,
                      Date = e.Date,
                      BusType = e.Bus.BusType.Type
-                 }).OrderByDescending(w=>w.Date);
+                 }).OrderByDescending(w => w.Date);
 
             if (result == null || !result.Any())
                 return BadRequest();
