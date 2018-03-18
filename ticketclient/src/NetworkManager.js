@@ -3,7 +3,7 @@
 export var NetworkManager =
   {
     state: {
-      url: 'http://localhost:5000/api/'
+      url: '/api/'
     },
 
     getInfo: function (addr, callbackFn, id, obj) {
@@ -12,15 +12,14 @@ export var NetworkManager =
       var urle = new URL(addr, this.state.url);
 
       if (id !== undefined) {
-        console.clear();
         urle += "/" + id;
-        console.log(urle);
       }
 
-
       if (obj !== undefined)
-        Object.keys(obj).forEach(key => urle.searchParams.append(key, obj[key]))
-
+      {
+        urle += "?";
+        Object.keys(obj).forEach(key => urle += key + "&"+ obj[key] + '?');
+      }
       var w = fetch(urle).then(o => callbackFn(o));
 
     },
