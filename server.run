@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+exec /home/server/dotnet/dotnet run --project Server

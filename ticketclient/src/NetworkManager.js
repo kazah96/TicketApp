@@ -9,7 +9,8 @@ export var NetworkManager =
     getInfo: function (addr, callbackFn, id, obj) {
       if (addr === undefined) return;
 
-      var urle = new URL(addr, this.state.url);
+      var urle = this.state.url + addr;
+	
 
       if (id !== undefined) {
         urle += "/" + id;
@@ -18,7 +19,7 @@ export var NetworkManager =
       if (obj !== undefined)
       {
         urle += "?";
-        Object.keys(obj).forEach(key => urle += key + "&"+ obj[key] + '?');
+        Object.keys(obj).forEach(key => urle += key + "="+ obj[key] + '&');
       }
       var w = fetch(urle).then(o => callbackFn(o));
 
