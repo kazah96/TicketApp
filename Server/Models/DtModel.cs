@@ -30,8 +30,12 @@ namespace Server.Models
 
     public class Credintals
     {
+        [Required]
         public string Email { get; set; }
+
+        [Required]
         public string Pass { get; set; }
+
     }
     public class BusType : INavigateId
     {

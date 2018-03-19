@@ -38,6 +38,7 @@ export default class RandomTrips extends Component {
 
     onClickCallback = (f) => {
         this.props.onClickCallback(f);
+       
     }
 
     shuffle = (array) => {

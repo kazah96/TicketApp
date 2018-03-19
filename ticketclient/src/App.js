@@ -64,6 +64,7 @@ class Error extends Component {
 
 	render() {
 		return <div className="alert"><h1>{this.props.data}</h1></div>
+
 	}
 
 }
@@ -118,9 +119,9 @@ class Schedule extends Component {
 		return (
 			<div>
 				<h4 className="text_city"> Расписание <span className="username">{this.props.user.name}</span></h4>
-				<hr/>
-				{this.props.data.map((o,id) => <TripBlock onClick={c=>{}} data={o} />)}
-		</div>
+				<hr />
+				{this.props.data.map((o, id) => <TripBlock onClick={c => { }} data={o} />)}
+			</div>
 		)
 	}
 
@@ -147,6 +148,23 @@ class App extends Component {
 		this.changeMainComponent = this.changeMainComponent.bind(this);
 		this.onLogged = this.onLogged.bind(this);
 	}
+
+	componentDidMount() {
+		NetworkManager.getInfo("getsession", o => this.onSessionResult(o));
+	}
+
+	onSessionResult = (o) => {
+		console.log(o)
+		if (o.status == 200) {
+			o.json().then(q => this.loginSuccess(q));
+		}
+	}
+
+
+	onSession = (q) => {
+		console.log(q);
+	}
+
 
 	changeMainComponent = (component) => {
 		this.setState({ selectedItem: component });
@@ -198,17 +216,17 @@ class App extends Component {
 	}
 
 	onFoundTripsClick = (data) => {
-		
+
 		if (this.state.logStatus == 1) {
 			NetworkManager.sendInfo("booking",
 				{ tripid: data.id, userid: this.state.user.id }, o => this.onBookingRequestFinished(o))
 		}
-		else if(this.state.logStatus == 'notlogged')
-		{
-			this.setState({error:"Войдите чтобы забронировать"})
-			this.setState({selectedItem:"error"})
+		else if (this.state.logStatus == 'notlogged') {
+			this.setState({ error: "Войдите чтобы забронировать" })
+			this.setState({ selectedItem: "error" })
+			
 		}
-		
+
 	}
 
 	onBookingRequestFinished = (r) => {
@@ -320,18 +338,26 @@ class App extends Component {
 		this.setState({ selectedItem: 'schedule' });
 	}
 
+	logout = () => {
+		NetworkManager.getInfo("logoff", o => {
+			this.setState({selectedItem:"trips"})
+			this.setState({logStatus:"notlogged"});
+			this.setState({user:undefined});
+			
+		});
+	}
+
 	componentPicker = (component) => {
 		if (component == "trip")
 			return <Trip />;
 
 		if (component == "schedule")
-			return <Schedule 
-			data={this.state.scheduleData} 
-			user={this.state.user}
+			return <Schedule
+				data={this.state.scheduleData}
+				user={this.state.user}
 			/>;
-		if(component == "error")
-		{
-			return <Error data={this.state.error}/>
+		if (component == "error") {
+			return <Error data={this.state.error} />
 		}
 		if (component == "bus")
 			return <Bus />;
@@ -371,6 +397,7 @@ class App extends Component {
 					routeEdit={this.routeEditor}
 					busEdit={this.busEditor}
 					schedule={this.schedule}
+					logout={this.logout}
 				/>
 
 				<div className="container">

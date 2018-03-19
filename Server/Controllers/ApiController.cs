@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Server.Models;
 
 namespace Server.Controllers
@@ -154,9 +156,9 @@ namespace Server.Controllers
 
 
         [HttpGet]
-        public IActionResult Get(FindTripQuery query)   
+        public IActionResult Get(FindTripQuery query)
         {
-            if(query.Start == null && query.Date == default && query.End == default) return BadRequest();
+            if (query.Start == null && query.Date == default && query.End == default) return BadRequest();
 
             var list = repo.Trips.Join(repo.Routes, e => e.RouteId, w => w.Id, (d, s) =>
                 new TripQuery
@@ -211,6 +213,23 @@ namespace Server.Controllers
 
 
     }
+
+    [Route("api/[controller]")]
+    public class GetSession : Controller
+    {
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var w = HttpContext.Session.GetJson<User>("user");
+            if( w != null)
+            {
+                return Ok(w);
+            }
+            return BadRequest();
+        }
+
+    }
+
     [Route("api/[controller]")]
     public class Login : Controller
     {
@@ -219,15 +238,72 @@ namespace Server.Controllers
         {
             this.repo = repo;
         }
+
         [HttpPost]
-        public User Post([FromBody]Credintals cred)
+        public IActionResult Post([FromBody]Credintals cred)
         {
-            if (cred.Email == null) return null;
-            System.Console.WriteLine(cred.Pass);
+            if (!ModelState.IsValid) return BadRequest();
 
             var User = repo.Users.FirstOrDefault(w => w.Email == cred.Email && w.Password == cred.Pass);
 
-            return User;
+            if (User != null)
+            {
+                HttpContext.Session.SetJson("user", User);
+                CookieBuilder f = new CookieBuilder();
+                f.HttpOnly =false;
+                f.SameSite = SameSiteMode.None;
+                f.SecurePolicy = CookieSecurePolicy.None;
+               
+                
+
+                HttpContext.Response.Cookies.Append("asd","asdasd",f.Build(this.HttpContext));
+                return Ok(User);
+            }
+
+            return BadRequest("Neverno");
+        }
+
+        [HttpGet]
+        public IActionResult Get(Credintals cred)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var User = repo.Users.FirstOrDefault(w => w.Email == cred.Email && w.Password == cred.Pass);
+
+            if (User != null)
+            {
+                HttpContext.Session.SetJson("user", User);
+                return Ok(User);
+            }
+
+            return BadRequest("Neverno");
+        }
+    }
+
+    [Route("api/[controller]")]
+    public class Logoff : Controller
+    {
+        [HttpGet]
+        public IActionResult Get()
+        {
+            HttpContext.Session.SetJson("user", null);
+            return Ok();
+        }
+    }
+
+
+
+
+    public static class SessionExtension
+    {
+        public static void SetJson(this ISession session, string key, object value)
+        {
+            session.SetString(key, JsonConvert.SerializeObject(value));
+        }
+        public static T GetJson<T>(this ISession session, string key)
+        {
+            var sessionData = session.GetString(key);
+            return sessionData == null ? default(T) : JsonConvert.DeserializeObject<T>(sessionData);
         }
 
     }
@@ -289,6 +365,7 @@ namespace Server.Controllers
 
         }
     }
+
 
     [Route("api/[controller]")]
     public class Booking : Controller
@@ -365,5 +442,7 @@ namespace Server.Controllers
 
         }
     }
+
+
 
 }

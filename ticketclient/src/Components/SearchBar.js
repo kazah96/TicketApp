@@ -12,7 +12,7 @@ export default class Trip extends Component {
             }
     };
 
-    switchFields = () => {
+    switchFields =  () => {
         let temp = this.state.start;
         this.setState({ start: this.state.end });
         this.setState({ end: temp });

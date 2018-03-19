@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace Server
 
         public Startup(IConfiguration configuration)
         {
-   
+
         }
 
         public IConfiguration Configuration { get; }
@@ -29,16 +30,22 @@ namespace Server
 
             services.AddDbContext<TicketDB>();
 
-//             services.AddCors(options =>
-//    {
-//        options.AddPolicy("AllowAllOrigin", builderw =>
-//        {
-//            builderw.AllowAnyOrigin();
-//            builderw.AllowAnyMethod();
-//            builderw.AllowAnyHeader();
-//        });
-//    });
+            services.AddCors(options =>
+   {
+       options.AddPolicy("AllowAllOrigin", builderw =>
+       {
+           builderw.AllowCredentials();
+           builderw.AllowAnyOrigin();
+           builderw.AllowAnyMethod();
+           builderw.AllowAnyHeader();
+       });
 
+   });
+            services.AddSession(o =>
+                       {
+                         o.Cookie.HttpOnly=false;
+                        
+                       });
             services.AddMvc();
         }
 
@@ -58,6 +65,7 @@ namespace Server
             }
 
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

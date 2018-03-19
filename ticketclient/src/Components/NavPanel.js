@@ -45,6 +45,10 @@ export default class NavPanel extends Component {
                     <li class="nav-item">
                         Админ <span className="username">{this.props.user.name}</span>
                     </li>
+                    <li class="nav-item">
+                        <a href="#" onClick={this.props.logout}>
+                            Выйти
+                    </a></li>
 
 
                 </ul>
@@ -67,8 +71,12 @@ export default class NavPanel extends Component {
                 </li>
 
                 <li class="nav-item">
-                    <span className="username">{this.props.user.name}</span>
+                    User <span className="username">{this.props.user.name}</span>
                 </li>
+                <li class="nav-item">
+                        <a href="#" onClick={this.props.logout}>
+                            Выйти
+                    </a></li>
 
 
             </ul>
@@ -88,6 +96,13 @@ export default class NavPanel extends Component {
                 </li>
                 <li class="nav-item">
                     Водила <span className="username">{this.props.user.name}</span>
+
+                </li>
+                <li class="nav-item">
+
+                    <a href="#" onClick={this.props.logout}>
+                        Выйти
+                    </a>
 
                 </li>
             </ul>
